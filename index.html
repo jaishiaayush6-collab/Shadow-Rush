@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#09051d" />
+  <meta name="description" content="Shadow Rush — Run, Jump, Survive." />
+  <title>Shadow Rush | Epic 3D Adventure</title>
+  <style>
+    :root{
+      --bg:#050313; --panel:#0d0a25; --panel2:#15103a; --line:#6d35ff;
+      --purple:#8c25ff; --blue:#1e8cff; --cyan:#31eaff; --gold:#ffd21a;
+      --text:#fff; --muted:#b7b3d6; --green:#28ef36; --red:#ff334e;
+      --shadow:0 0 26px rgba(111,42,255,.45), inset 0 0 24px rgba(69,35,160,.2);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      min-height:100vh;color:var(--text);font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(90,25,190,.34), transparent 34rem),
+        radial-gradient(circle at 15% 50%, rgba(24,103,255,.12), transparent 26rem),
+        linear-gradient(135deg,#02010b 0%,#08041b 46%,#02010b 100%);
+      overflow-x:hidden;
+    }
+    body:before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+      background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+                       linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+      background-size:32px 32px;z-index:-1;
+    }
+    a{text-decoration:none;color:inherit}
+    button{font:inherit}
+    .container{width:min(1200px,92%);margin:auto}
+    .topbar{
+      position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);
+      background:rgba(3,2,14,.76);border-bottom:1px solid rgba(140,37,255,.32);
+    }
+    .nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:1000;letter-spacing:.5px}
+    .brand-mark{
+      width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+      background:linear-gradient(145deg,#3510a8,#9b1cff);border:2px solid #b968ff;
+      box-shadow:0 0 20px rgba(157,45,255,.7);font-size:15px
+    }
+    .brand span{font-size:17px}.brand small{display:block;color:#9f9abf;font-size:10px;letter-spacing:2px}
+    .navlinks{display:flex;gap:8px;flex-wrap:wrap}
+    .navlinks a{padding:10px 14px;border-radius:12px;color:#c6c0df;font-weight:800;font-size:12px}
+    .navlinks a:hover{color:#fff;background:rgba(126,43,255,.18)}
+    .coins{display:flex;align-items:center;gap:8px;font-weight:900;color:var(--gold)}
+    .coin{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#6a3c00;background:linear-gradient(#fff36a,#f2a900);border:2px solid #ffe76a;font-size:11px}
+    .hero{padding:52px 0 36px;display:grid;grid-template-columns:1.12fr .88fr;gap:34px;align-items:center}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid #713cff;border-radius:999px;background:rgba(93,33,255,.12);color:#d8c9ff;font-size:11px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase}
+    h1{font-size:clamp(50px,9vw,105px);line-height:.82;letter-spacing:-4px;margin:20px 0 10px;font-weight:1000;text-transform:uppercase;
+      background:linear-gradient(180deg,#fff 12%,#b7d9ff 42%,#ffca16 68%,#ff4d00 100%);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      filter:drop-shadow(0 9px 0 #3b0e7c) drop-shadow(0 0 24px rgba(161,47,255,.7));
+    }
+    .tagline{font-size:clamp(16px,2.2vw,24px);font-weight:1000;color:#fff;text-shadow:0 0 16px #7b22ff}
+    .hero p{margin-top:15px;max-width:650px;color:var(--muted);line-height:1.7}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+    .btn{
+      border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:13px 20px;cursor:pointer;
+      color:#fff;font-weight:1000;letter-spacing:.3px;transition:.2s;box-shadow:0 10px 26px rgba(0,0,0,.25)
+    }
+    .btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
+    .btn-primary{background:linear-gradient(180deg,#ffd928,#ff9e00);color:#251000;border-color:#ffe86a;box-shadow:0 0 25px rgba(255,182,0,.35)}
+    .btn-blue{background:linear-gradient(180deg,#2b9dff,#155ee9);box-shadow:0 0 25px rgba(24,128,255,.35)}
+    .btn-purple{background:linear-gradient(180deg,#a932ff,#5c13d9);box-shadow:0 0 25px rgba(140,37,255,.4)}
+    .btn-green{background:linear-gradient(180deg,#4cff52,#09c92c);color:#03220a}
+    .hero-art{
+      position:relative;min-height:410px;border:2px solid #6b36e9;border-radius:30px;overflow:hidden;
+      background:#0b0623;box-shadow:var(--shadow)
+    }
+    .hero-art img{width:100%;height:100%;min-height:410px;object-fit:cover;display:block;filter:saturate(1.15) contrast(1.05)}
+    .hero-art:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,2,25,.15),transparent 45%,rgba(8,3,30,.5));pointer-events:none}
+    .floating-badge{position:absolute;left:18px;bottom:18px;z-index:2;padding:12px 16px;border-radius:15px;background:rgba(7,3,27,.85);border:1px solid #9e4cff;box-shadow:0 0 25px rgba(140,37,255,.45)}
+    .floating-badge b{display:block;color:#ffd31a}.floating-badge span{font-size:11px;color:#c9c3e5}
+    section{padding:42px 0}
+    .section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .section-title h2{font-size:28px;font-weight:1000}.section-title p{color:#9892b8;font-size:12px}
+    .screens{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .screen{
+      position:relative;min-height:210px;border:1px solid #4f28a8;border-radius:20px;overflow:hidden;
+      background:linear-gradient(160deg,#15103a,#070516);box-shadow:var(--shadow)
+    }
+    .screen img{width:100%;height:100%;min-height:210px;object-fit:cover;opacity:.76;transition:.35s}
+    .screen:hover img{transform:scale(1.05);opacity:.95}
+    .screen .label{position:absolute;left:12px;right:12px;bottom:12px;padding:10px 12px;border-radius:12px;background:rgba(4,2,17,.78);border:1px solid rgba(180,113,255,.6);backdrop-filter:blur(8px)}
+    .label b{display:block;font-size:14px}.label span{font-size:10px;color:#bdb7d4}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .feature{padding:18px;border:1px solid #30205d;border-radius:18px;background:linear-gradient(145deg,rgba(24,16,60,.86),rgba(8,5,22,.92))}
+    .feature .icon{font-size:28px;margin-bottom:8px}.feature h3{font-size:14px}.feature p{color:#a6a0bf;font-size:11px;line-height:1.6;margin-top:7px}
+    .game-panel{
+      display:grid;grid-template-columns:1.15fr .85fr;gap:18px;padding:20px;border:1px solid #5426a7;border-radius:24px;
+      background:linear-gradient(145deg,rgba(18,11,49,.94),rgba(5,3,18,.96));box-shadow:var(--shadow)
+    }
+    .runner{
+      position:relative;min-height:420px;border-radius:18px;overflow:hidden;border:2px solid #7b4bff;
+      background:url('assets/design-reference-3.jpg') center/cover no-repeat;
+    }
+    .runner:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,2,15,.05),rgba(3,2,15,.72))}
+    .hud{position:absolute;z-index:3;left:14px;right:14px;top:14px;display:flex;justify-content:space-between;gap:10px}
+    .hudbox{padding:8px 10px;border-radius:12px;background:rgba(5,2,18,.78);border:1px solid rgba(134,81,255,.8);font-size:11px;font-weight:900}
+    .runner-center{position:absolute;z-index:3;left:50%;bottom:22px;transform:translateX(-50%);text-align:center;width:100%}
+    .runner-center .score{font-size:32px;font-weight:1000;color:#ffd51c;text-shadow:0 0 15px #ff8b00}
+    .runner-center p{font-size:10px;color:#d7d0eb}
+    .control-row{display:flex;justify-content:center;gap:10px;margin-top:12px}
+    .control{width:50px;height:50px;border-radius:50%;border:1px solid #7c52e9;background:rgba(11,7,38,.85);color:#fff;font-size:20px;cursor:pointer}
+    .control:active{transform:scale(.94)}
+    .side-panel{display:grid;gap:12px}
+    .mini-card{border:1px solid #352167;border-radius:17px;padding:15px;background:rgba(11,7,34,.9)}
+    .mini-card h3{font-size:13px;margin-bottom:11px}.mini-card p{font-size:11px;color:#aaa4c1;line-height:1.6}
+    .progress{height:9px;border-radius:999px;background:#211744;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;width:68%;background:linear-gradient(90deg,#7b20ff,#22cfff,#ffd21a);box-shadow:0 0 12px #6c35ff}
+    .shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .item{padding:12px;border:1px solid #3a236d;border-radius:16px;background:linear-gradient(150deg,#17103e,#08051f)}
+    .item .thumb{height:105px;border-radius:12px;display:grid;place-items:center;font-size:43px;background:radial-gradient(circle at 50% 45%,#6926b9,#130b36 65%);border:1px solid #6c37c7}
+    .item h4{font-size:12px;margin-top:9px}.price{font-size:11px;color:#ffd21a;margin-top:5px}
+    .item button{width:100%;margin-top:9px;padding:8px;border:0;border-radius:9px;background:#20e737;color:#032006;font-weight:1000;cursor:pointer}
+    .settings{display:grid;gap:10px}
+    .setting{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:13px;background:#0d092b;border:1px solid #30205a}
+    .setting span{font-size:12px}.toggle{width:44px;height:24px;border:0;border-radius:999px;background:#19df3a;position:relative;cursor:pointer}.toggle:after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;right:3px;top:3px;background:#fff;box-shadow:0 2px 8px #000}
+    .footer{margin-top:40px;padding:30px 0;border-top:1px solid #261a49;color:#827b9f;font-size:11px;text-align:center}
+    .toast{position:fixed;right:20px;bottom:20px;z-index:100;padding:13px 16px;border:1px solid #8f48ff;border-radius:13px;background:#10082e;color:#fff;box-shadow:0 0 25px rgba(142,52,255,.5);transform:translateY(130%);transition:.25s;font-size:12px;font-weight:800}
+    .toast.show{transform:translateY(0)}
+    @media(max-width:900px){
+      .hero,.game-panel{grid-template-columns:1fr}.hero-art{min-height:320px}.hero-art img{min-height:320px}
+      .screens{grid-template-columns:1fr 1fr}.features{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:600px){
+      .nav{min-height:62px}.navlinks{display:none}.brand span{font-size:14px}
+      .hero{padding-top:32px}.hero h1{letter-spacing:-2px}.hero-art{min-height:260px;border-radius:20px}.hero-art img{min-height:260px}
+      .screens,.features{grid-template-columns:1fr}.game-panel{padding:12px}.runner{min-height:390px}.shop-grid{grid-template-columns:1fr 1fr}
+      section{padding:30px 0}.section-title{align-items:start;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="#home"><div class="brand-mark">SR</div><div><span>SHADOW RUSH</span><small>RUN • JUMP • SURVIVE</small></div></a>
+    <nav class="navlinks">
+      <a href="#screens">Screens</a><a href="#gameplay">Gameplay</a><a href="#shop">Shop</a><a href="#settings">Settings</a>
+    </nav>
+    <div class="coins"><span class="coin">C</span><span id="coinCount">1250</span></div>
+  </div>
+</header>
+
+<main id="home" class="container">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">⚡ EPIC 3D ADVENTURE</span>
+      <h1>Shadow<br>Rush</h1>
+      <div class="tagline">RUN • JUMP • SURVIVE</div>
+      <p>A cinematic ninja runner experience inspired by the supplied Shadow Rush UI references — dark neon worlds, glowing controls, characters, rewards, shops and responsive gameplay panels.</p>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="playGame()">▶ PLAY GAME</button>
+        <button class="btn btn-blue" onclick="showToast('Character selection opened')">♟ CHARACTER</button>
+        <button class="btn btn-purple" onclick="scrollToSection('shop')">🛒 STORE</button>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img src="assets/design-reference-1.jpg" alt="Shadow Rush visual reference">
+      <div class="floating-badge"><b>v1.0.0</b><span>3D graphics • multiple characters • smooth controls</span></div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <div class="section-title"><div><h2>GAME SCREENS</h2><p>Built around the visual language of the supplied references.</p></div></div>
+    <div class="screens">
+      <div class="screen"><img src="assets/design-reference-1.jpg" alt="Main menu reference"><div class="label"><b>Main Menu</b><span>Play • Character • Store • Settings</span></div></div>
+      <div class="screen"><img src="assets/design-reference-2.jpg" alt="Character and gameplay reference"><div class="label"><b>Character & Gameplay</b><span>Choose your ninja and enter the run</span></div></div>
+      <div class="screen"><img src="assets/design-reference-3.jpg" alt="Game systems reference"><div class="label"><b>Shop • Settings • Game Over</b><span>Rewards, upgrades and run results</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><div><h2>FEATURES</h2><p>Interactive demo controls are included.</p></div></div>
+    <div class="features">
+      <div class="feature"><div class="icon">🎮</div><h3>3D Gameplay UI</h3><p>Immersive runner-style presentation with glowing HUD, controls and score.</p></div>
+      <div class="feature"><div class="icon">👑</div><h3>Multiple Characters</h3><p>Select different heroes and skins from the character area.</p></div>
+      <div class="feature"><div class="icon">🪙</div><h3>Coins & Rewards</h3><p>Collect coins, track score and spend currency in the store.</p></div>
+      <div class="feature"><div class="icon">🏆</div><h3>Score & Levels</h3><p>Progress bars and level feedback create a game-like loop.</p></div>
+      <div class="feature"><div class="icon">🌙</div><h3>Dark Neon Theme</h3><p>Purple, blue, cyan and gold accents mirror the reference artwork.</p></div>
+      <div class="feature"><div class="icon">⚡</div><h3>Smooth Controls</h3><p>Tap controls, animated buttons and responsive mobile layout.</p></div>
+    </div>
+  </section>
+
+  <section id="gameplay">
+    <div class="section-title"><div><h2>PLAYABLE PREVIEW</h2><p>Use the buttons to simulate a Shadow Rush run.</p></div></div>
+    <div class="game-panel">
+      <div class="runner">
+        <div class="hud"><div class="hudbox">❤️❤️❤️ &nbsp; SCORE: <span id="score">2450</span></div><div class="hudbox">🪙 <span id="runCoins">87</span></div></div>
+        <div class="runner-center"><div class="score" id="distance">LEVEL 1</div><p id="runStatus">READY TO RUN</p>
+          <div class="control-row"><button class="control" onclick="move('left')">←</button><button class="control" onclick="jump()">↑</button><button class="control" onclick="move('right')">→</button></div>
+        </div>
+      </div>
+      <div class="side-panel">
+        <div class="mini-card"><h3>🏆 RUN PROGRESS</h3><div class="progress"><i id="progressBar"></i></div><p id="progressText">68% toward the next milestone.</p></div>
+        <div class="mini-card"><h3>⚡ QUICK ACTIONS</h3><div class="actions"><button class="btn btn-green" onclick="collectCoin()">🪙 Collect Coin</button><button class="btn btn-purple" onclick="playGame()">▶ Start / Continue</button></div></div>
+        <div class="mini-card"><h3>🎯 OBJECTIVE</h3><p>Keep running, collect coins and build your score. This is a front-end gameplay simulation, ready to connect to a real game engine or backend later.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="shop">
+    <div class="section-title"><div><h2>SHADOW SHOP</h2><p>Purchase demo items using your coin balance.</p></div></div>
+    <div class="shop-grid">
+      <div class="item"><div class="thumb">🥷</div><h4>Shadow Ninja</h4><div class="price">🪙 5000</div><button onclick="buy(5000,'Shadow Ninja')">BUY</button></div>
+      <div class="item"><div class="thumb">🐉</div><h4>Dragon Skin</h4><div class="price">🪙 1000</div><button onclick="buy(1000,'Dragon Skin')">BUY</button></div>
+      <div class="item"><div class="thumb">🪽</div><h4>Shadow Wings</h4><div class="price">🪙 750</div><button onclick="buy(750,'Shadow Wings')">BUY</button></div>
+    </div>
+  </section>
+
+  <section id="settings">
+    <div class="section-title"><div><h2>SETTINGS</h2><p>Reference-inspired game settings panel.</p></div></div>
+    <div class="settings">
+      <div class="setting"><span>🎵 Music</span><button class="toggle" onclick="toggleSetting(this)"></button></div>
+      <div class="setting"><span>🔊 Sound</span><button class="toggle" onclick="toggleSetting(this)"></button></div>
+      <div class="setting"><span>📳 Vibration</span><button class="toggle" onclick="toggleSetting(this)"></button></div>
+      <div class="setting"><span>🎨 Graphics — High</span><button class="btn btn-blue" onclick="showToast('Graphics set to High')">HIGH</button></div>
+      <div class="setting"><span>🌐 Language — English</span><button class="btn btn-purple" onclick="showToast('Language menu opened')">EN</button></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">SHADOW RUSH • RUN • JUMP • SURVIVE • Front-end interactive demo • v1.0.0</footer>
+<div id="toast" class="toast"></div>
+
+<script>
+  let coins = 1250, score = 2450, runCoins = 87, progress = 68, running = false;
+  const $ = id => document.getElementById(id);
+  function showToast(msg){
+    const t=$('toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(window.toastTimer); window.toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+  }
+  function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+  function playGame(){
+    running=true; $('runStatus').textContent='RUNNING — COLLECT COINS!';
+    $('distance').textContent='LEVEL 1 • RUN';
+    showToast('Shadow Rush started!');
+    pulseRun();
+  }
+  function pulseRun(){
+    if(!running)return;
+    score += 25; progress = Math.min(100,progress+1);
+    $('score').textContent=score; $('progressBar').style.width=progress+'%';
+    $('progressText').textContent=progress+'% toward the next milestone.';
+    setTimeout(pulseRun,1200);
+  }
+  function collectCoin(){
+    if(!running) playGame();
+    coins+=10; runCoins++; score+=100;
+    $('coinCount').textContent=coins; $('runCoins').textContent=runCoins; $('score').textContent=score;
+    showToast('+1 coin collected');
+  }
+  function jump(){showToast('Ninja jumped!'); $('runStatus').textContent='JUMP!'; setTimeout(()=>running&&($('runStatus').textContent='RUNNING — COLLECT COINS!'),500);}
+  function move(dir){showToast(dir==='left'?'Moved left':'Moved right');}
+  function buy(cost,name){
+    if(coins<cost){showToast('Not enough coins for '+name);return}
+    coins-=cost; $('coinCount').textContent=coins; showToast(name+' purchased!');
+  }
+  function toggleSetting(btn){
+    const on=btn.dataset.on!=='false'; btn.dataset.on=String(!on);
+    btn.style.background=on?'#4b5563':'#19df3a'; btn.style.opacity=on?'0.55':'1';
+    btn.setAttribute('aria-label',on?'Off':'On'); showToast((on?'Disabled ':'Enabled ')+btn.parentElement.querySelector('span').textContent);
+  }
+  document.querySelectorAll('.toggle').forEach(b=>b.setAttribute('aria-label','On'));
+</script>
+</body>
+</html>
