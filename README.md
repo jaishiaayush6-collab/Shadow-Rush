@@ -1,14 +1,14 @@
-# Shadow Rush Website
+# AJ Shadow Rush
 
-Responsive front-end website built from the supplied Shadow Rush visual references.
-
-## Included
-- index.html — complete standalone website
-- assets/ — supplied reference artwork used by the site
-- Responsive mobile/desktop layout
-- Main menu, gameplay preview, shop and settings sections
-- Interactive score, coin collection, shop purchases and toggles
-- Neon blue/purple/gold game UI styling
+## Files
+- index.html — main page
+- style.css — complete neon UI styling
+- script.js — gameplay/menu interactions
+- assets/icon-512.png — 512x512 app icon
+- assets/icon-192.png — 192x192 icon
+- assets/profile-photo.png — supplied profile photo
 
 ## Run
-Open `index.html` in any modern browser. No server or external dependency is required.
+Open `index.html` in a browser. No server is required.
+
+The app icon uses the supplied photo and displays only `AJ` in the badge; the earlier `नेपाली साहित्य` text is not included.
